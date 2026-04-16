@@ -15,8 +15,8 @@ public class CalcServiceTests
     {
         var service = new CalcService();
         var result = service.Execute(10, 5, "+");
-        // テストを失敗させる
-        Assert.AreEqual(10, result);
+        // テストを成功させる
+        Assert.AreEqual(15, result);
     }
 
     /// <summary>

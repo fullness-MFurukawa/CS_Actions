@@ -25,4 +25,5 @@ jobs:
         
       - name: 単体・結合テストの実行
         # ビルド済みのバイナリを再利用(--no-build)してテストを実行
-        run: dotnet test --configuration Release --no-build
+        # verbosity=detailedを付けることで、Console.WriteLineの出力がGitHub Actionsのログに表示される
+        run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"

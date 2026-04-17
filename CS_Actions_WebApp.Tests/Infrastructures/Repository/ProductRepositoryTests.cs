@@ -82,15 +82,17 @@ public class ProductRepositoryTests
         // 実行 (Act)
         var products = await repository.SelectAllAsync();
 
+        // 視覚的確認のためのログ出力
+        Console.WriteLine("--- 取得した商品データ一覧 ---");
+        foreach (var p in products)
+        {
+            Console.WriteLine($"ID: {p.Id}, Name: {p.Name}, Price: {p.Price}円");
+        }
+        Console.WriteLine("------------------------------");
+
         // 検証 (Assert)
         Assert.AreEqual(14, products.Count);
         Assert.AreEqual("水性ボールペン(黒)", products[0].Name);
         Assert.AreEqual(1300, products[13].Price);
-
-        // 取得結果の内容をコンソールに出力（デバッグ用）
-        foreach (var product in products)
-        {
-            Console.WriteLine($"Id: {product.Id}, ProductUuid: {product.ProductUuid}, Name: {product.Name}, Price: {product.Price}");
-        }
     }
 }

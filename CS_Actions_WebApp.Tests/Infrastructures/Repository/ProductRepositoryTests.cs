@@ -1,8 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.EntityFrameworkCore;
-using Testcontainers.PostgreSql;
-using CS_Actions_WebApp.Infrastructures.Repository;
 using CS_Actions_WebApp.Infrastructures.Context;
+using CS_Actions_WebApp.Infrastructures.Repository;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Testcontainers.PostgreSql;
 namespace CS_Actions_WebApp.Tests.Infrastructures;
 
 /// <summary>
@@ -25,7 +27,7 @@ public class ProductRepositoryTests
             .WithDatabase("ActionsDB")
             .WithImage("postgres:17-alpine")
             .Build();
-        
+
         await _dbContainer.StartAsync();
 
         // テスト用のテーブル作成と初期データ投入のSQL
@@ -51,7 +53,7 @@ public class ProductRepositoryTests
             ('5ca7dbdf-0010-44c5-a001-e4c13c4fe3a1','鉛筆(赤)',100),
             ('fbc43b9b-90a9-4712-925c-4d66a2a30372','色鉛筆(12色)',400),
             ('4b3db238-8ada-49b4-bb60-1a034914e528','色鉛筆(48色)',1300);";
-        
+
         await _dbContainer.ExecScriptAsync(sql);
     }
 

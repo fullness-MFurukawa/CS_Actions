@@ -1,5 +1,6 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using CS_Actions_WebApp.Services;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace CS_Actions_WebApp.Tests.Services;
 /// <summary>
 /// 計算機能を提供するサービスクラスの単体テストドライバ
@@ -28,5 +29,5 @@ public class CalcServiceTests
     {
         var service = new CalcService();
         service.Execute(10, 0, "/");
-    }      
+    }
 }

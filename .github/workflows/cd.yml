@@ -5,7 +5,7 @@ name: C# CD Pipeline
 # 【修正後】CIワークフローが「完了」した時に実行
 on:
   workflow_run:
-    workflows: [" .NET CS_WebApp CI"] # ※ci.ymlの「name:」で指定している名前と完全に一致させます
+    workflows: [".NET CS_WebApp CI"] # ※ci.ymlの「name:」で指定している名前と完全に一致させます
     types:
       - completed
     branches:

@@ -26,9 +26,9 @@ jobs:
         # 上記のアクションに渡すパラメータ（引数）の定義
         with:
           # GitHub Secretsから認証情報を安全に取得し、環境に展開（注入）する
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}         # 接続先サーバーのIPアドレス
-          username: ${{ secrets.ACTIONS_AZURE_USER }}     # ログインユーザー名（ubuntu）
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}      # 秘密鍵（PEM）のテキストデータ
+          host: ${{ secrets.ACTIONS_AWS_HOST }}         # 接続先サーバーのIPアドレス
+          username: ${{ secrets.ACTIONS_AWS_USER }}     # ログインユーザー名（ubuntu）
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}      # 秘密鍵（PEM）のテキストデータ
           
           # SSH接続が成功した後に、リモートサーバー上で実行されるシェルコマンド
           # （「|」は複数行の文字列を記述するためのYAMLの記法）
@@ -42,9 +42,9 @@ jobs:
       - name: ASP.NET Core Runtime 8.0 のプロビジョニング
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}
-          username: ${{ secrets.ACTIONS_AZURE_USER }}
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
           script: |
             # 1. パッケージリストの最新化
             echo "--- Updating Package List ---"
@@ -55,3 +55,43 @@ jobs:
             # 3. インストール結果の確認
             echo "--- Verifying Installation ---"
             dotnet --list-runtimes
+
+      # --- アーティファクトの生成（ビルド） ---
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v4
+
+      - name: .NET SDK のセットアップ
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: アプリケーションのビルドと発行 (Publish)
+        # FDD形式、Linux向けに最適化して ./publish フォルダに出力
+        run: dotnet publish -c Release -r linux-x64 --self-contained false -o ./publish
+
+      # --- 運用環境の事前準備（ディレクトリ作成とクリーンアップ） ---
+      - name: デプロイ先ディレクトリの準備
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
+          script: |
+            echo "--- Preparing Deployment Directory ---"
+            # 配置用ディレクトリの作成
+            sudo mkdir -p /var/www/myapp
+            # ubuntuユーザーに所有権を変更（SCPでの書き込み許可のため）
+            sudo chown -R ubuntu:ubuntu /var/www/myapp
+            # 前回デプロイ時の古いファイルを削除（冪等性の担保）
+            rm -rf /var/www/myapp/*
+
+      # --- アーティファクトの転送 ---
+      - name: SCPによるアーティファクトの転送
+        uses: appleboy/scp-action@v1.0.3
+        with:
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
+          source: "./publish/*"       # 送信元（Runner上で生成した全ファイル）
+          target: "/var/www/myapp/"   # 送信先（VM上の配置ディレクトリ）
+          strip_components: 1         # 転送先に「publish」という親フォルダを作らず中身だけを展開

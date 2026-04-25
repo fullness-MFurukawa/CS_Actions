@@ -14,7 +14,7 @@ on:
 # 実行するジョブ（作業のまとまり）の定義
 jobs:
   deploy: # ジョブの識別名（任意の名前）
-    # GitHub側が用意する使い捨ての仮想環境（Runner）のOSを指定
+    # GitHub側が用意する使い捨ての仮想環境(Runner)のOSを指定
     runs-on: ubuntu-latest
     
     # ジョブ内で順番に実行される手順（ステップ）のリスト

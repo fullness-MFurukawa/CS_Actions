@@ -2,9 +2,14 @@
 name: C# CD Pipeline
 
 # ワークフローが実行される条件（トリガー）の定義
+# 【修正後】CIワークフローが「完了」した時に実行
 on:
-  push:
-    branches: [ "main" ] # mainブランチに変更がPushされた時に自動実行される
+  workflow_run:
+    workflows: [" .NET CS_WebApp CI"] # ※ci.ymlの「name:」で指定している名前と完全に一致させます
+    types:
+      - completed
+    branches:
+      - main
 
 # 実行するジョブ（作業のまとまり）の定義
 jobs:

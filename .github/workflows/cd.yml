@@ -81,7 +81,7 @@ jobs:
             # 配置用ディレクトリの作成
             sudo mkdir -p /var/www/myapp
             # ubuntuユーザーに所有権を変更（SCPでの書き込み許可のため）
-            sudo chown -R ${{ secrets.SERVER_USER }}:${{ secrets.SERVER_USER }} /var/www/myapp
+            sudo chown -R $(whoami):$(whoami) /var/www/myapp
             # 前回デプロイ時の古いファイルを削除（冪等性の担保）
             rm -rf /var/www/myapp/*
 

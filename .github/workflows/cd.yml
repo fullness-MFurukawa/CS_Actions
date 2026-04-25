@@ -26,9 +26,9 @@ jobs:
         # 上記のアクションに渡すパラメータ（引数）の定義
         with:
           # GitHub Secretsから認証情報を安全に取得し、環境に展開（注入）する
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}         # 接続先サーバーのIPアドレス
-          username: ${{ secrets.ACTIONS_AZURE_USER }}     # ログインユーザー名（ubuntu）
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}      # 秘密鍵（PEM）のテキストデータ
+          host: ${{ secrets.ACTIONS_AWS_HOST }}         # 接続先サーバーのIPアドレス
+          username: ${{ secrets.ACTIONS_AWS_USER }}     # ログインユーザー名（ubuntu）
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}      # 秘密鍵（PEM）のテキストデータ
           
           # SSH接続が成功した後に、リモートサーバー上で実行されるシェルコマンド
           # （「|」は複数行の文字列を記述するためのYAMLの記法）
@@ -38,3 +38,20 @@ jobs:
             uname -a # サーバーのOSやカーネル情報を出力し、Linuxであることを確認
             echo "--- Current User ---"
             whoami   # 実行ユーザーを出力し、指定したユーザーでログインできたか確認
+
+      - name: ASP.NET Core Runtime 8.0 のプロビジョニング
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
+          script: |
+            # 1. パッケージリストの最新化
+            echo "--- Updating Package List ---"
+            sudo apt-get update
+            # 2. ASP.NET Core ランタイムのインストール
+            echo "--- Installing ASP.NET Core Runtime 8.0 ---"
+            sudo apt-get install -y aspnetcore-runtime-8.0
+            # 3. インストール結果の確認
+            echo "--- Verifying Installation ---"
+            dotnet --list-runtimes

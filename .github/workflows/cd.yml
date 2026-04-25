@@ -87,7 +87,7 @@ jobs:
 
       # --- アーティファクトの転送 ---
       - name: SCPによるアーティファクトの転送
-        uses: appleboy/scp-action@v1.0.3
+        uses: appleboy/scp-action@maste
         with:
           host: ${{ secrets.ACTIONS_AWS_HOST }}
           username: ${{ secrets.ACTIONS_AWS_USER }}

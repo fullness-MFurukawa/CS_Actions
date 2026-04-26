@@ -1,23 +1,21 @@
 -- 1. データベースの作成
--- （※PostgreSQLの仕様上 CREATE DATABASE IF NOT EXISTS が存在しないため、
--- ここで「既に存在する」というエラーが出てもCIが止まらない運用にするか、
--- もしくはDB自体は手動作成済みという前提にするのが一般的）
 CREATE DATABASE "ActionsDB";
 
 -- 2. 接続先データベースを ActionsDB に切り替える
 \c "ActionsDB"
 
--- 3. テーブルが存在しない場合のみ作成する（スキップ処理）
--- 既に存在する場合は何もせず、既存のデータを保護
-CREATE TABLE IF NOT EXISTS product (
+-- 3. 研修向け：常にクリーンな状態にするため、既存のテーブルを削除
+DROP TABLE IF EXISTS product;
+
+-- 4. テーブルの作成
+CREATE TABLE product (
     id            INT         GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     product_uuid  UUID        NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     name          VARCHAR(30) DEFAULT NULL,
     price         INT         DEFAULT NULL
 );
 
--- 4. データの投入（UUIDが既に存在する場合はスキップ）
--- product_uuid に UNIQUE 制約があることを利用し、重複する場合はエラーにせず無視
+-- 5. データの投入
 INSERT INTO product (product_uuid, name, price) VALUES
 ('ac413f22-0cf1-490a-9635-7e9ca810e544','水性ボールペン(黒)',120),
 ('8f81a72a-58ef-422b-b472-d982e8665292','水性ボールペン(赤)',120),

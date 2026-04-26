@@ -101,9 +101,9 @@ jobs:
       - name: データベースの初期化（init.sql の実行）
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.AWS_DB_HOST }}  # DBホストはVMのIPではなく、RDSのエンドポイントを指定
-          username: ${{ secrets.AWS_DB_NAME }} # DBユーザー名を指定（例: admin）
-          key: ${{ secrets.ACTIONS_AWS_SECRET }} # DBユーザーの秘密鍵（PEM）を指定
+          host: ${{ secrets.ACTIONS_AWS_HOST }}  
+          username: ${{ secrets.ACTIONS_AWS_USER }} 
+          key: ${{ secrets.ACTIONS_AWS_SECRET }} 
           script: |
             echo "--- Executing init.sql against Remote Database ---"
            

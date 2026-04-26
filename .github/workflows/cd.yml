@@ -106,7 +106,7 @@ jobs:
           key: ${{ secrets.ACTIONS_AWS_SECRET }} # DBユーザーの秘密鍵（PEM）を指定
           script: |
             echo "--- Executing init.sql against Remote Database ---"
-            
+           
             # 既にVMにインストール済みのpsqlを利用し、リモートDBへSQLを適用
             # （Step 5で /var/www/myapp/ に転送された init.sql を使用します）
             PGPASSWORD="${{ secrets.AWS_DB_PASSWORD }}" psql -h ${{ secrets.AWS_DB_HOST }} -U ${{ secrets.AWS_DB_USER }} -d ${{ secrets.AWS_DB_NAME }} -f /var/www/myapp/init.sql

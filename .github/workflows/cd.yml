@@ -160,6 +160,11 @@ jobs:
             echo "--- Configuring Nginx ---"
                   
             # 【2. Nginx リバースプロキシ設定の生成】
+            echo "--- Installing Nginx ---"
+            # Nginxがインストールされていない場合を考慮し、インストールを実行
+            sudo apt-get update
+            sudo apt-get install -y nginx
+            echo "--- Configuring Nginx ---"
             # インターネットからのアクセス(80番ポート)を受け止め、内部の5000番ポートへ転送(プロキシ)する設定
             sudo bash -c 'cat << EOF > /etc/nginx/sites-available/default
             server {

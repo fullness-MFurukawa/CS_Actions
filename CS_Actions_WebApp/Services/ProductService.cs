@@ -23,5 +23,5 @@ public class ProductService
     {
         // リポジトリのメソッドを非同期で呼び出して結果を返す
         return await _productRepository.SelectAllAsync();
-    }       
+    }
 }

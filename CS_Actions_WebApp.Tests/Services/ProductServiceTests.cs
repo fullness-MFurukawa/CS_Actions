@@ -1,9 +1,11 @@
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using CS_Actions_WebApp.Services;
-using CS_Actions_WebApp.Infrastructures.Repository;
 using CS_Actions_WebApp.Infrastructures.Entity;
+using CS_Actions_WebApp.Infrastructures.Repository;
+using CS_Actions_WebApp.Services;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Moq;
 namespace CS_Actions_WebApp.Tests.Services;
 /// <summary>
 /// ProductServiceの単体テストドライバ
@@ -17,8 +19,8 @@ public class ProductServiceTests
         // Arrange(準備)
         // Repositoryのモックを作成 (DbContextは不要なのでnullを渡すか、ダミーを渡す)
         // ※ Moqがメソッドを上書きできるように、対象メソッドにはvirtualが必要
-        var mockRepo = new Mock<ProductRepository>(null!); 
-        
+        var mockRepo = new Mock<ProductRepository>(null!);
+
         var mockProducts = new List<Product>
         {
             new Product { Id = 1, Name = "水性ボールペン(黒)", Price = 120 },
@@ -37,7 +39,7 @@ public class ProductServiceTests
         // Assert(検証)
         Assert.AreEqual(2, result.Count);
         Assert.AreEqual("水性ボールペン(黒)", result[0].Name);
-        
+
         // RepositoryのSelectAllAsyncが正確に1回呼ばれたことを検証
         mockRepo.Verify(repo => repo.SelectAllAsync(), Times.Once);
     }

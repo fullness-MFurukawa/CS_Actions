@@ -26,9 +26,9 @@ jobs:
         # 上記のアクションに渡すパラメータ（引数）の定義
         with:
           # GitHub Secretsから認証情報を安全に取得し、環境に展開（注入）する
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}         # 接続先サーバーのIPアドレス
-          username: ${{ secrets.ACTIONS_AZURE_USER }}     # ログインユーザー名（ubuntu）
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}      # 秘密鍵（PEM）のテキストデータ
+          host: ${{ secrets.ACTIONS_AWS_HOST }}         # 接続先サーバーのIPアドレス
+          username: ${{ secrets.ACTIONS_AWS_USER }}     # ログインユーザー名（ubuntu）
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}      # 秘密鍵（PEM）のテキストデータ
           
           # SSH接続が成功した後に、リモートサーバー上で実行されるシェルコマンド
           # （「|」は複数行の文字列を記述するためのYAMLの記法）
@@ -42,9 +42,9 @@ jobs:
       - name: ASP.NET Core Runtime 8.0 のプロビジョニング
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}
-          username: ${{ secrets.ACTIONS_AZURE_USER }}
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
           script: |
             # 1. パッケージリストの最新化
             echo "--- Updating Package List ---"
@@ -76,9 +76,9 @@ jobs:
       - name: デプロイ先ディレクトリの準備
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}
-          username: ${{ secrets.ACTIONS_AZURE_USER }}
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
           script: |
             echo "--- Preparing Deployment Directory ---"
             # 配置用ディレクトリの作成
@@ -92,9 +92,9 @@ jobs:
       - name: SCPによるアーティファクトの転送
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}
-          username: ${{ secrets.ACTIONS_AZURE_USER }}
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
           source: "publish/*"
           target: "/var/www/myapp/"   # 送信先（VM上の配置ディレクトリ）
           strip_components: 1         # 転送先に「publish」という親フォルダを作らず中身だけを展開
@@ -103,18 +103,18 @@ jobs:
       - name: データベースの初期化（init.sql の実行）
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}  
-          username: ${{ secrets.ACTIONS_AZURE_USER }} 
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }} 
+          host: ${{ secrets.ACTIONS_AWS_HOST }}  
+          username: ${{ secrets.ACTIONS_AWS_USER }} 
+          key: ${{ secrets.ACTIONS_AWS_SECRET }} 
           script: |
             echo "--- Executing init.sql against Remote Database ---"
            
             # 既にVMにインストール済みのpsqlを利用し、リモートDBへSQLを適用
             # （Step 5で /var/www/myapp/ に転送された init.sql を使用します）
-            PGPASSWORD="${{ secrets.AZURE_DB_PASSWORD }}" psql -h ${{ secrets.AZURE_DB_HOST }} -U ${{ secrets.AZURE_DB_USER }} -d postgres -f /var/www/myapp/init.sql
+            PGPASSWORD="${{ secrets.AWS_DB_PASSWORD }}" psql -h ${{ secrets.AWS_DB_HOST }} -U ${{ secrets.AWS_DB_USER }} -d postgres -f /var/www/myapp/init.sql
             echo "--- Verifying Data Insertion ---"
             # 作成された ActionsDB に接続し、productテーブルの件数を確認する
-            PGPASSWORD="${{ secrets.AZURE_DB_PASSWORD }}" psql -h ${{ secrets.AZURE_DB_HOST }} -U ${{ secrets.AZURE_DB_USER }} -d ActionsDB -c "SELECT COUNT(*) AS product_total_count FROM product;"
+            PGPASSWORD="${{ secrets.AWS_DB_PASSWORD }}" psql -h ${{ secrets.AWS_DB_HOST }} -U ${{ secrets.AWS_DB_USER }} -d ActionsDB -c "SELECT COUNT(*) AS product_total_count FROM product;"
             echo "--- Database Initialization Completed ---"
       
       # --- Webサーバーの連携とアプリケーションの起動 ---
@@ -122,9 +122,9 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           # 運用環境（VM）へのSSH接続情報
-          host: ${{ secrets.ACTIONS_AZURE_HOST }}
-          username: ${{ secrets.ACTIONS_AZURE_USER }}
-          key: ${{ secrets.ACTIONS_AZURE_SECRET }}
+          host: ${{ secrets.ACTIONS_AWS_HOST }}
+          username: ${{ secrets.ACTIONS_AWS_USER }}
+          key: ${{ secrets.ACTIONS_AWS_SECRET }}
           script: |
             echo "--- Configuring systemd service ---"      
             
@@ -147,12 +147,12 @@ jobs:
               # ログ(syslog)出力時の識別子名
               SyslogIdentifier=dotnet-myapp
               # セキュリティの観点から、rootではなく一般ユーザー(ubuntu等)権限で実行
-              User=${{ secrets.ACTIONS_AZURE_USER }}      
+              User=${{ secrets.ACTIONS_AWS_USER }}      
               # .NETの動作環境をProduction(運用環境)に設定
               Environment=ASPNETCORE_ENVIRONMENT=Production
               # 【重要】GitHub Secretsから接続文字列を組み立てて環境変数として注入
               # ソースコードや設定ファイルにパスワードを直接書かない（ハードコードしない）ためのベストプラクティス
-              Environment="ConnectionStrings__DefaultConnection=Host=${{ secrets.AZURE_DB_HOST }};Database=ActionsDB;Username=${{ secrets.AZURE_DB_USER }};Password=${{ secrets.AZURE_DB_PASSWORD }}"      
+              Environment="ConnectionStrings__DefaultConnection=Host=${{ secrets.AWS_DB_HOST }};Database=ActionsDB;Username=${{ secrets.AWS_DB_USER }};Password=${{ secrets.AWS_DB_PASSWORD }}"      
             [Install]
               # OS起動時に自動起動するためのターゲット指定(通常のマルチユーザーモード時)
               WantedBy=multi-user.target

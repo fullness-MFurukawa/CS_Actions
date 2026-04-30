@@ -18,7 +18,7 @@ public class ProductRepository
     /// <summary>
     /// 全ての商品をID順に取得する
     /// </summary>
-    public async Task<List<Product>> SelectAllAsync()
+    public virtual async Task<List<Product>> SelectAllAsync()
     {
         return await _context.Products.OrderBy(p => p.Id).ToListAsync();
     }

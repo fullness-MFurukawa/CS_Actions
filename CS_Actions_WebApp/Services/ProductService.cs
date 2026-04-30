@@ -4,7 +4,7 @@ namespace CS_Actions_WebApp.Services;
 /// <summary>
 /// 商品情報を扱うサービスインターフェイス実装クラス
 /// </summary>
-public class ProductService
+public class ProductService : IProductService
 {
     private readonly ProductRepository _productRepository;
     /// <summary>

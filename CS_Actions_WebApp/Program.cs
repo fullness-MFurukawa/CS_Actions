@@ -1,5 +1,5 @@
-using CS_Actions_WebApp.Services;
 using CS_Actions_WebApp.Infrastructures.Repository;
+using CS_Actions_WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +8,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<CalcService>();
 // Repositoryの登録
 builder.Services.AddScoped<ProductRepository>();
-// Serviceの登録)
+// Serviceの登録
 builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();

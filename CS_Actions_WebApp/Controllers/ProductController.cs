@@ -1,12 +1,14 @@
 using CS_Actions_WebApp.Models;
 using CS_Actions_WebApp.Services;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace CS_Actions_WebApp.Controllers;
 /// <summary>
 /// 商品一覧コントローラ
 /// </summary> 
-public class ProductController : Controller{
+public class ProductController : Controller
+{
     private readonly IProductService _productService;
     /// <summary>
     /// コンストラクタ

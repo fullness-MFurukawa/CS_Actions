@@ -5,6 +5,7 @@ using CS_Actions_WebApp.Services;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Moq;
 
 namespace CS_Actions_WebApp.Tests.Controllers;
@@ -20,7 +21,7 @@ public class ProductControllerTests
         // 準備 (Arrange)
         // 今回はインターフェイス(IProductService)をモック化
         var mockService = new Mock<IProductService>();
-        
+
         // モックが返すダミーデータを作成
         var mockProducts = new List<Product>
         {
@@ -56,5 +57,5 @@ public class ProductControllerTests
         // Controller内部で、Serviceのメソッドが正確に1回呼び出されたことを検証
         mockService.Verify(service => service.GetAllProductsAsync(), Times.Once);
     }
-        
+
 }

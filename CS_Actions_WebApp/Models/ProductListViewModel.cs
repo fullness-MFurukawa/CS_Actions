@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using CS_Actions_WebApp.Infrastructures.Entity;
 namespace CS_Actions_WebApp.Models;
 
@@ -12,4 +13,3 @@ public class ProductListViewModel
     /// </summary>
     public List<Product> Products { get; set; } = new List<Product>();
 }
-

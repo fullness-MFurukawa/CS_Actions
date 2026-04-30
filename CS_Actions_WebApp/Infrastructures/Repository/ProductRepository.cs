@@ -17,6 +17,7 @@ public class ProductRepository
 
     /// <summary>
     /// 全ての商品をID順に取得する
+    /// virtualを付与しているのは、Moqでこのメソッドを上書きできるようにするため
     /// </summary>
     public virtual async Task<List<Product>> SelectAllAsync()
     {

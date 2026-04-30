@@ -1,10 +1,15 @@
 using CS_Actions_WebApp.Services;
+using CS_Actions_WebApp.Infrastructures.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // MVCのコントローラーとビュー、およびCalcServiceをDIコンテナに登録
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<CalcService>();
+// Repositoryの登録
+builder.Services.AddScoped<ProductRepository>();
+// Serviceの登録)
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 

@@ -13,7 +13,7 @@ namespace CS_Actions_WebApp.Tests;
 public class CalcControllerTests
 {
     // <summary>
-    /// 計算処理のテスト
+    /// 計算処理のテスト    
     /// </summary>
     [TestMethod]
     public void Calculate_ValidInput_UpdatesResult()

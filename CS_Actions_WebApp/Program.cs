@@ -1,7 +1,14 @@
+using CS_Actions_WebApp.Infrastructures.Context;
 using CS_Actions_WebApp.Infrastructures.Repository;
 using CS_Actions_WebApp.Services;
 
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// 【追加】データベースコンテキストの登録
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // MVCのコントローラーとビュー、およびCalcServiceをDIコンテナに登録
 builder.Services.AddControllersWithViews();

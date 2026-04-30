@@ -12,13 +12,12 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">CS_Actions_WebApp</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Calc" asp-action="Index">CS_Actions_WebApp</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <!-- 変更 ここから -->
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Calc" asp-action="Index">計算機</a>
@@ -27,8 +26,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">商品一覧</a>
                         </li>
                     </ul>
-                    <!-- 変更 ここまで -->
-                </div>
+                    </div>
             </div>
         </nav>
     </header>
@@ -40,7 +38,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - CS_Actions_WebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2026 - CS_Actions_WebApp - <a href="#">Privacy</a>
         </div>
     </footer>
 
